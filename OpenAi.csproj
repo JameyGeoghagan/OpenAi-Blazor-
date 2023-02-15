@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>86bdadaa-e5db-4073-bc82-cb0e34aee27d</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenAI.Net.Client" Version="1.0.15" />
+  </ItemGroup>
+
+</Project>

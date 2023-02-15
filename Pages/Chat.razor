@@ -1,0 +1,52 @@
+﻿@page "/Chat"
+
+@using Data;
+@using OpenAI.Net;
+@inject IOpenAIService openAiService;
+
+<h1>Open AI Chat</h1>
+
+<EditForm  Model="@SearchModel" OnValidSubmit="Search">
+
+    <InputTextArea style="width: 100%;" @bind-Value="SearchModel.SearchText"></InputTextArea>
+    <button type="submit">Search</button>
+
+</EditForm>
+
+<ul>
+    @foreach(var item in History)
+    {
+        <li>
+            <div>@item.User</div>
+            <div>@item.Message</div>
+        </li>
+    }
+</ul>
+
+
+@code {
+    private SearchInfo SearchModel = new SearchInfo();
+    private List<ChatInfo> History = new List<ChatInfo>();
+
+    public async Task Search()
+    {
+        History.Add(new ChatInfo() { Message = SearchModel.SearchText, User = "DevGG" });
+        History.Add(new ChatInfo() { Message = "", User = "AI" });
+
+        await foreach(var response in openAiService.TextCompletion.GetStream(SearchModel.SearchText, o =>
+        {
+            o.MaxTokens = 1050;
+        }))
+        {
+            History[History.Count - 1].Message += response.Result.Choices[0].Text;
+            StateHasChanged();
+        }
+
+        SearchModel.SearchText = "";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+      
+    }
+}
